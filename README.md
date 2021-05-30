@@ -1,4 +1,4 @@
-# Minimalist Weather
+# Angular Weather App
 
 Weather application that displays weather, temperature, humidity, and wind based on locational keyword.
 
