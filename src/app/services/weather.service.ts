@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Subject} from 'rxjs';
+import weatherConfig from './../../../config';
 
 @Injectable()
 export class WeatherService {
@@ -10,74 +11,81 @@ export class WeatherService {
 
   getCityWeatherByName(city: string, metric: 'metric' | 'imperial' = 'metric'): Subject<string> {
     const dataSub = new Subject<string>();
+    const key = weatherConfig.SECRET_API_KEY;
     this.http.get(
-      `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${metric}s&appid=e457be47122ee9b74020bca475fafd41`)
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${metric}s&appid=${key}`)
       .subscribe((data) => {
         dataSub.next(data['weather']);
       }, (err) => {
         console.log(err);
       });
-    return dataSub;
-  }
+      return dataSub;
+    }
 
-  getCitiesWeathersByNames(cities: Array<string>, metric: 'metric' | 'imperial' = 'metric'): Subject<any> {
-    const citiesSubject = new Subject();
-    cities.forEach((city) => {
-      citiesSubject.next(this.http.get(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${metric}&APPID=e457be47122ee9b74020bca475fafd41`));
+    getCitiesWeathersByNames(cities: Array<string>, metric: 'metric' | 'imperial' = 'metric'): Subject<any> {
+      const citiesSubject = new Subject();
+      const key = weatherConfig.SECRET_API_KEY;
+      cities.forEach((city) => {
+        citiesSubject.next(this.http.get(
+          `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${metric}&APPID=${key}`));
     });
     return citiesSubject;
   }
 
   getWeatherState(city: string): Subject<string> {
     const dataSubject = new Subject<string>();
+    const key = weatherConfig.SECRET_API_KEY;
     this.http.get(
-      `https://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=e457be47122ee9b74020bca475fafd41`)
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=${key}`)
       .subscribe((data) => {
         dataSubject.next(data['weather'][0].main);
       });
-    return dataSubject;
-  }
+      return dataSubject;
+    }
 
-  getCurrentTemp(city: string, metric: 'metric' | 'imperial' = 'metric'): Subject<number> {
-    const dataSubject = new Subject<number>();
-    this.http.get(
-      `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${metric}&APPID=e457be47122ee9b74020bca475fafd41`)
+    getCurrentTemp(city: string, metric: 'metric' | 'imperial' = 'metric'): Subject<number> {
+      const dataSubject = new Subject<number>();
+      const key = weatherConfig.SECRET_API_KEY;
+      this.http.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${metric}&APPID=${key}`)
       .subscribe((weather: any) => {
         dataSubject.next(Math.round(Number(weather.main.temp)));
       });
-    return dataSubject;
-  }
+      return dataSubject;
+    }
 
 
-  getCurrentHum(city: string, metric: 'metric' | 'imperial' = 'metric'): Subject<number> {
+    getCurrentHum(city: string, metric: 'metric' | 'imperial' = 'metric'): Subject<number> {
     const dataSubject = new Subject<number>();
+    const key = weatherConfig.SECRET_API_KEY;
     this.http.get(
-      `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${metric}&APPID=e457be47122ee9b74020bca475fafd41`)
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${metric}&APPID=${key}`)
       .subscribe((weather: any) => {
         console.log(weather);
         dataSubject.next(weather.main.humidity);
       });
-    return dataSubject;
-  }
+      return dataSubject;
+    }
 
 
-  getCurrentWind(city: string, metric: 'metric' | 'imperial' = 'metric'): Subject<number> {
-    const dataSubject = new Subject<number>();
-    this.http.get(
-      `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${metric}&APPID=e457be47122ee9b74020bca475fafd41`)
-      .subscribe((weather: any) => {
-        dataSubject.next(Math.round(Math.round(weather.wind.speed)));
-      });
-    return dataSubject;
-  }
+    getCurrentWind(city: string, metric: 'metric' | 'imperial' = 'metric'): Subject<number> {
+      const dataSubject = new Subject<number>();
+      const key = weatherConfig.SECRET_API_KEY;
+      this.http.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${metric}&APPID=${key}`)
+        .subscribe((weather: any) => {
+          dataSubject.next(Math.round(Math.round(weather.wind.speed)));
+        });
+        return dataSubject;
+      }
 
 
   getMaxTemp(city: string, metric: 'metric' | 'imperial' = 'metric'): Subject<number> {
     const dataSubject = new Subject<number>();
+    const key = weatherConfig.SECRET_API_KEY;
     let max: number;
     this.http.get(
-      `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${metric}&APPID=e457be47122ee9b74020bca475fafd41`)
+      `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${metric}&APPID=${key}`)
       .subscribe((weather: any) => {
         max = weather.list[0].main.temp;
         weather.list.forEach((value) => {
@@ -87,14 +95,15 @@ export class WeatherService {
         });
         dataSubject.next(Math.round(max));
       });
-    return dataSubject;
-  }
+      return dataSubject;
+    }
 
-  getMinTemp(city: string, metric: 'metric' | 'imperial' = 'metric'): Subject<number> {
-    const dataSubject = new Subject<number>();
-    let min: number;
-    this.http.get(
-      `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${metric}&APPID=e457be47122ee9b74020bca475fafd41`)
+    getMinTemp(city: string, metric: 'metric' | 'imperial' = 'metric'): Subject<number> {
+      const dataSubject = new Subject<number>();
+      const key = weatherConfig.SECRET_API_KEY;
+      let min: number;
+      this.http.get(
+        `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${metric}&APPID=${key}`)
       .subscribe((weather: any) => {
         min = weather.list[0].main.temp;
         weather.list.forEach((value) => {
@@ -104,17 +113,18 @@ export class WeatherService {
         });
         dataSubject.next(Math.round(min));
       });
-    return dataSubject;
-  }
+      return dataSubject;
+    }
 
-  getForecast(city: string, metric: 'metric' | 'imperial' = 'metric'): Subject<Array<any>> {
-    const dataSubject = new Subject<Array<any>>();
-    this.http.get(
-      `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${metric}&APPID=e457be47122ee9b74020bca475fafd41`)
-      .subscribe((weather: any) => {
-        dataSubject.next(weather.list);
-      });
-    return dataSubject;
+    getForecast(city: string, metric: 'metric' | 'imperial' = 'metric'): Subject<Array<any>> {
+      const dataSubject = new Subject<Array<any>>();
+      const key = weatherConfig.SECRET_API_KEY;
+      this.http.get(
+        `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${metric}&APPID=${key}`)
+        .subscribe((weather: any) => {
+          dataSubject.next(weather.list);
+        });
+        return dataSubject;
   }
 
 }
